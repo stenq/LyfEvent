@@ -4,6 +4,7 @@ import EventsPage from './pages/EventsPage'
 import EventPage from './pages/EventPage'
 import Home from './pages/Home'
 import CreateEventPage from './pages/CreateEventPage'
+import About from './pages/About'
 import "react-image-crop/dist/ReactCrop.css";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -20,6 +21,7 @@ function App() {
             <Route path='/event/:id' element={<EventPage />}/>
             <Route path='/events' element={<EventsPage />}/>
             <Route path='/create-event' element={<CreateEventPage />}/>
+            <Route path='/about' element={<About/>}/>
           </Routes>
       </div>
     </Router>
