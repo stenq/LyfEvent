@@ -26,27 +26,32 @@ const EventsPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      
       {/* Content Wrapper */}
       <div>
-        <div className="grid lg:grid-cols-4 gap-8 container mx-auto">
-          {currentEvents.map((event) => (
-            <EventItem key={event.id} event={event} />
-          ))}
-        </div>
-
-        
+        {events.length > 0 ? (
+          <div className="grid lg:grid-cols-4 gap-8 container mx-auto">
+            {currentEvents.map((event) => (
+              <EventItem key={event.id} event={event} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-center items-center  ">
+            <p className="text-xl font-bold text-gray-600">EVENTS COMING...</p>
+          </div>
+        )}
       </div>
 
       {/* Pagination */}
-      <div className="py-4 container mx-auto">
-        <Pagination
-          eventsPerPage={eventsPerPage}
-          totalEvents={events.length}
-          paginate={paginate}
-          currentPage={currentPage}
-        />
-      </div>
+      {events.length > 0 && (
+        <div className="py-4 container mx-auto">
+          <Pagination
+            eventsPerPage={eventsPerPage}
+            totalEvents={events.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

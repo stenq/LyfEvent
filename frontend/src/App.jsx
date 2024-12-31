@@ -26,7 +26,7 @@ function App() {
             <Route path='/' exact element={<Home />} />
             <Route path='/event/:id' element={<EventPage />}/>
             <Route path='/events' element={<EventsPage />}/>
-            <Route path='/create-event' element={<CreateEventPage />}/>
+            
             <Route path='/about' element={<About/>}/>
 
             <Route path='/create-event/*' element={
