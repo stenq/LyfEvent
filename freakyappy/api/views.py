@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import EventSerializer
 from .models import Event
@@ -45,6 +46,20 @@ def apiOverview(request):
             'body': None,
             'description': 'Deletes an exiting event'
         },
+        
+        {
+            'Endpoint': '/token/',
+            'method': 'POST',
+            'body': {'body': ""},
+            'description': "Access token"
+        },
+
+        {
+            'Endpoint': '/token-refresh/',
+            'method': 'POST',
+            'body': {'body': ""},
+            'description': "Access token"
+        },
     ]
     
     return Response(api_urls)
@@ -55,14 +70,15 @@ def eventList(request):
     serializer = EventSerializer(events, many=True )
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def eventDetail(request, pk):
     events = Event.objects.get(id=pk)
     serializer = EventSerializer(events, many=False )
     return Response(serializer.data)
 
-
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def eventCreate(request):
     serializer = EventSerializer(data=request.data)
     
@@ -78,7 +94,7 @@ def eventCreate(request):
         request.data['image'] = ContentFile(image_data, name=image_name) 
     
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(host=request.user)
         return Response({
             "status": "success",
             "message": "Event created successfully",

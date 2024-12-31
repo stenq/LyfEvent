@@ -1,9 +1,15 @@
-import React, { useState, useRef,  useEffect} from 'react';
+import React, { useState, useRef,  useEffect, useContext} from 'react';
+import { useNavigate} from 'react-router-dom';
 import Modal from "../components/Modal"
+import { AuthContext } from '../context/AuthContext'
 
 
 const CreateEventPage = ({eventId}) => {
+
+  const {authTokens} = useContext(AuthContext)
   
+  const navigate = useNavigate()
+
   const [modalOpen, setModalOpen]= useState(false)
 
   const [imageSrc, setImageSrc] = useState(null);
@@ -115,7 +121,7 @@ const CreateEventPage = ({eventId}) => {
     
       const finalFormData = {
         ...formData,
-        image: picUrl.current,  // Assuming picUrl.current contains the correct image URL or data
+        image: picUrl.current,
       };
     
       try {
@@ -123,6 +129,7 @@ const CreateEventPage = ({eventId}) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + String(authTokens.access)
           },
           body: JSON.stringify(finalFormData),
         });
@@ -132,6 +139,7 @@ const CreateEventPage = ({eventId}) => {
         if (response.ok) {
           // Event was created successfully
           console.log('Event created successfully:', data);
+          navigate("/events")
         } else {
           // Failed to create the event, log the errors
           console.error('Error:', data.errors || data.message || 'Unknown error');
@@ -147,7 +155,7 @@ const CreateEventPage = ({eventId}) => {
     
       const finalFormData = {
         ...formData,
-        image: picUrl.current,  // Assuming picUrl.current contains the correct image URL or data
+        image: picUrl.current,
       };
     
       try {
@@ -155,6 +163,7 @@ const CreateEventPage = ({eventId}) => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + String(authTokens.access)
           },
           body: JSON.stringify(finalFormData),
         });
@@ -162,10 +171,11 @@ const CreateEventPage = ({eventId}) => {
         const data = await response.json(); // Get the response body after awaiting fetch
     
         if (response.ok) {
-          // Event was created successfully
-          console.log('Event created successfully:', data);
+
+          console.log('Event edited successfully:', data);
+          navigate("/events")
         } else {
-          // Failed to create the event, log the errors
+
           console.error('Error:', data.errors || data.message || 'Unknown error');
         }
       } catch (error) {

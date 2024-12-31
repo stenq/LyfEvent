@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 
 class Event(models.Model):
+    host=models.ForeignKey(User,on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255,verbose_name="Event Title")
     description = models.TextField(verbose_name="Event Description")
     updated=models.DateTimeField(auto_now=True)
