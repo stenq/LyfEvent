@@ -7,33 +7,47 @@ const EventPage = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
-  const navigate = useNavigate()
-  const {user} = useContext(AuthContext)
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     getEvent();
   }, [id]);
 
   const getEvent = async () => {
-    let response = await fetch(`/api/events-detail/${id}/`);
-    let data = await response.json();
-    setEvent(data);
+    try {
+      const response = await fetch(`/api/events-detail/${id}/`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch event details.');
+      }
+      const data = await response.json();
+      setEvent(data);
+    } catch (error) {
+      console.error('Error fetching event:', error.message);
+    }
   };
 
   const handleEdit = () => {
     setEditOpen(true); // Open the edit mode
   };
 
-  const handleDelete = async () =>{
-
-    await fetch (`/api/events-delete/${id}/`, {
-        method : "DELETE",
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/events-delete/${id}/`, {
+        method: 'DELETE',
         headers: {
-            "Content-Type" : "application/json"
-        }
-    })
-    navigate("/events")
-  }
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        navigate('/events');
+      } else {
+        throw new Error('Failed to delete the event.');
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error.message);
+    }
+  };
 
   return (
     <div>
@@ -44,23 +58,22 @@ const EventPage = () => {
           <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
             {/* Page Title */}
             <div className="mb-16 text-center">
-              <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Event Overview</h1>
+              <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                Event Overview
+              </h1>
             </div>
 
             <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
               {/* Image Section */}
-              <div className="shrink-0 mx-auto" style={{ width: '25vw' }}>
+              <div className="shrink-0 mx-auto w-full max-w-sm lg:max-w-md">
                 <div className="border border-gray-200 rounded-lg shadow-lg bg-white">
-                  <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                    <img
-                      className="absolute top-0 left-0 w-full h-full object-cover rounded-md"
-                      src={event?.image}
-                      alt="Event"
-                    />
-                  </div>
+                  <img
+                    className="w-full h-full object-cover rounded-md"
+                    src={event?.image || '/placeholder-image.jpg'}
+                    alt="Event"
+                  />
                 </div>
               </div>
-
 
               {/* Text Content Section */}
               <div className="mt-6 sm:mt-8 lg:mt-0">
@@ -83,20 +96,23 @@ const EventPage = () => {
                   </div>
                 )}
 
-                {/* Edit Button */}
-                <button
-                  className="mt-8 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
-                  onClick={handleEdit}
-                >
-                  Edit
-                </button>
-
-                <button onClick={handleDelete}
-                  className=" mx-4 mt-8 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700"
-                >
-                  Delete
-                </button>
-
+                {/* Edit and Delete Buttons */}
+                {user?.user_id === event?.host && (
+                  <div className="mt-8 flex gap-4">
+                    <button
+                      className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

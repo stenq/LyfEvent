@@ -13,6 +13,7 @@ import {AuthProvider} from "./context/AuthContext"
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Profile from './pages/Profile'
+import MyEvents from './pages/MyEvents'
 
 
 function App() {
@@ -35,6 +36,10 @@ function App() {
 
             <Route path='/profile/*' element={
               <PrivateRoute element={<Profile/>}/>
+            }/>
+
+            <Route path='/my-events/*' element={
+              <PrivateRoute element={<MyEvents/>}/>
             }/>
 
             <Route path='/login' element={<LoginPage />}/>

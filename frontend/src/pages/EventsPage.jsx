@@ -27,6 +27,7 @@ const EventsPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Content Wrapper */}
+      <h1 className='flex justify-center text-4xl font-bold text-black mb-6'>All Events</h1>
       <div>
         {events.length > 0 ? (
           <div className="grid lg:grid-cols-4 gap-8 container mx-auto">

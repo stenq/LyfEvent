@@ -23,6 +23,12 @@ def apiOverview(request):
             'description': 'Returns an array of events'
         },
         {
+            'Endpoint': '/my-events/',
+            'method': 'GET',
+            'body': None,
+            'description': "Returns an array of host's events"
+        },
+        {
             'Endpoint': '/events-detail/<str:pk>',
             'method': 'GET',
             'body': None,
@@ -142,3 +148,11 @@ def eventDelete(request, pk):
     event.delete()
 
     return Response("SUCCESFULLY DELETED")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def myEvents(request):
+    my_events = Event.objects.filter(host=request.user).order_by('-updated') 
+    serializer = EventSerializer(my_events, many=True)
+    return Response(serializer.data)
