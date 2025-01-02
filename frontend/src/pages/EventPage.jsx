@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateEventPage from './CreateEventPage';
 import { AuthContext } from '../context/AuthContext';
+import Join from '../components/Join';
 
 const EventPage = () => {
   const { id } = useParams();
@@ -96,8 +97,8 @@ const EventPage = () => {
                   </div>
                 )}
 
-                {/* Edit and Delete Buttons */}
-                {user?.user_id === event?.host && (
+                {/* Edit  Delete Join/Joined Buttons */}
+                {user?.user_id === event?.host ? (
                   <div className="mt-8 flex gap-4">
                     <button
                       className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
@@ -112,6 +113,8 @@ const EventPage = () => {
                       Delete
                     </button>
                   </div>
+                ) : (
+                  <Join eventId={id} />
                 )}
               </div>
             </div>

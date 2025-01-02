@@ -156,3 +156,20 @@ def myEvents(request):
     my_events = Event.objects.filter(host=request.user).order_by('-updated') 
     serializer = EventSerializer(my_events, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def joinEvent(request, pk):
+    print(request.data)
+    user = request.user
+
+    event = Event.objects.get(id=pk)
+
+    if event.is_user_joined(user):
+        raise ValidationError({"error": "User already joined this event."})
+
+    event.participants.add(user)
+    event.save()
+
+    serializer = EventSerializer(event)
+    return Response(serializer.data)

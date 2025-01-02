@@ -16,7 +16,7 @@ class Event(models.Model):
     capacity = models.IntegerField(verbose_name="Event Capacity",blank=False)
     category = models.CharField(max_length=50, verbose_name="Event Category")
     image = models.ImageField(upload_to="event_images", blank=True, null=True, default="event_images/default.jpg")
-    participants = models.IntegerField(default=0, verbose_name="Participants Count")
+    participants = models.ManyToManyField(User, related_name="joined_event", blank=True)
     date = models.DateTimeField(verbose_name="Event Date")
     location = models.CharField(max_length=255, verbose_name="Event Location")
    
