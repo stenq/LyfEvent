@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventItem from '../components/EventItem';
 import Pagination from '../components/Pagination';
-
+import Footer from "../components/Footer";
 const EventsPage = () => {
   let [events, setEvents] = useState([]);
   let [currentPage, setCurrentPage] = useState(1);
@@ -53,8 +53,11 @@ const EventsPage = () => {
           />
         </div>
       )}
+      <Footer></Footer>
     </div>
+
   );
 };
 
 export default EventsPage;
+

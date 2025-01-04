@@ -5,6 +5,7 @@ import EventPage from './pages/EventPage'
 import Home from './pages/Home'
 import CreateEventPage from './pages/CreateEventPage'
 import About from './pages/About'
+import Footer from './components/Footer'
 import LoginPage from './pages/LoginPage'
 import "react-image-crop/dist/ReactCrop.css";
 import PrivateRoute from "./utils/PrivateRoute"
