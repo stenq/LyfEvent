@@ -2,8 +2,8 @@ Django
 djangorestframework
 django-cors-headers
 django_resized
-<<<<<<< HEAD
+
 djangorestframework-simplejwt
-=======
+
 Pillow
->>>>>>> d7038739c1a40557660b1226075fb3c524a7b6b3
+
