@@ -79,7 +79,7 @@ const EventPage = () => {
               {/* Text Content Section */}
               <div className="mt-6 sm:mt-8 lg:mt-0">
                 {/* Event Title */}
-                <h1 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">
+                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                   {event?.title}
                 </h1>
 
@@ -97,25 +97,52 @@ const EventPage = () => {
                   </div>
                 )}
 
+                {event?.location && (
+                  <div className="mt-6">
+                    <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Location:</h4>
+                    <p className="mt-2 text-base  text-gray-600">{event?.location}</p>
+                  </div>
+                )}
+
+              {event?.date && (
+                <div className="mt-6 flex ">
+                  <div className='mr-8'>
+                  <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Date:</h4>
+                  <p className="mt-2 text-base text-gray-600">
+                    {new Intl.DateTimeFormat('en-GB', { dateStyle: 'short' }).format(new Date(event.date))}
+                  </p>
+                  </div>
+                  
+                  <div>
+                  <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Time:</h4>
+                  <p className="mt-2 text-base text-gray-600">
+                    {new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(new Date(event.date))}
+                  </p>
+                  </div>
+                </div>
+              )}
+
+
+
                 {/* Edit  Delete Join/Joined Buttons */}
                 {user?.user_id === event?.host ? (
                   <div className="mt-8 flex gap-4">
                     <button
-                      className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+                      className="px-6 py-3.5 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
                       onClick={handleEdit}
                     >
                       Edit
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700"
+                      className="px-6 py-3.5 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700"
                     >
                       Delete
                     </button>
                   </div>
                 ) : (
                   <Join eventId={id} />
-                )}
+                ) }
               </div>
             </div>
           </div>

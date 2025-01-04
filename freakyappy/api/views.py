@@ -160,15 +160,26 @@ def myEvents(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def joinEvent(request, pk):
-    print(request.data)
+
     user = request.user
 
     event = Event.objects.get(id=pk)
 
-    if event.is_user_joined(user):
-        raise ValidationError({"error": "User already joined this event."})
-
     event.participants.add(user)
+    event.save()
+
+    serializer = EventSerializer(event)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def leaveEvent(request, pk):
+
+    user = request.user
+
+    event = Event.objects.get(id=pk)
+
+    event.participants.remove(user)
     event.save()
 
     serializer = EventSerializer(event)

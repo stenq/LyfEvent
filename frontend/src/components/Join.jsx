@@ -1,9 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 const Join = ({ eventId }) => {
   const [joined, setJoined] = useState(false);
   const { authTokens, user } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   useEffect(() => {
     checkJoined();
@@ -31,6 +33,11 @@ const Join = ({ eventId }) => {
   };
 
   const handleJoin = async () => {
+
+    if (!user) {
+    navigate ("/login")
+  }
+
     try {
       const response = await fetch(`/api/events-join/${eventId}/`, {
         method: 'POST',
@@ -49,15 +56,52 @@ const Join = ({ eventId }) => {
     }
   };
 
+  const handleLeave = async () => {
+    try {
+      const response = await fetch(`/api/events-leave/${eventId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+
+      if (response.ok) {
+        setJoined(false); // Successfully joined the event
+      } 
+    } catch (error) {
+      console.error("Error joining the event:", error);
+      
+    }
+  };
+
   return (
     <div>
-      <button
-        onClick={handleJoin}  // Trigger the join event when clicked
-        disabled={joined}     // Disable the button if already joined
-        className={`mt-8 px-6 py-3.5 font-semibold rounded-md shadow ${joined ? 'bg-gray-400 '  : 'bg-green-600 text-white hover:bg-green-800'}`}
-      >
-        {joined ? "Joined" : "Join"}  
-      </button>
+      {joined ? (
+        <div className="mt-8">
+        <p className="text-lg font-medium text-gray-700 mb-4">
+          You've already joined this event.
+        </p>
+        <button
+          onClick={handleLeave} // Trigger leave event
+          className=" px-6 py-3.5 font-semibold rounded-md shadow bg-red-600 text-white hover:bg-red-800"
+        >
+          Leave
+        </button>
+        </div>
+      ) : (
+        <div className="mt-8">
+        <p className="text-lg font-medium text-gray-700 mb-4">
+          Join if you plan on participating in this event.
+        </p>
+        <button
+          onClick={handleJoin} // Trigger join event
+          className="px-6 py-3.5 font-semibold rounded-md shadow bg-green-600 text-white hover:bg-green-800"
+        >
+          Join
+        </button>
+        </div>
+      )}
     </div>
   );
 };
