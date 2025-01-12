@@ -6,3 +6,4 @@ djangorestframework-simplejwt
 Pillow
 daphne
 channels
+django-channels-jwt-auth-middleware

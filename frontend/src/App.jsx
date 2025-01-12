@@ -31,6 +31,10 @@ function App() {
             
             <Route path='/about' element={<About/>}/>
 
+            <Route path='/chat/:name/*' element={
+              <PrivateRoute element={<ChatPage/>}/>
+            }/>
+
             <Route path='/create-event/*' element={
               <PrivateRoute element={<CreateEventPage/>}/>
             }/>

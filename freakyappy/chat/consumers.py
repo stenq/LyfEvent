@@ -1,76 +1,69 @@
 from channels.generic.websocket import WebsocketConsumer
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
-from .models import *
+from .models import ChatGroup, GroupMessage
 from asgiref.sync import async_to_sync
-
 import json
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 class ChatRoomConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
+
         self.chat_name = self.scope["url_route"]["kwargs"]["chat_name"]
         self.chat = ChatGroup.objects.get(chat_name=self.chat_name)
-        # Add the channel to the group
+
         async_to_sync(self.channel_layer.group_add)(
             self.chat_name, self.channel_name
         )
 
-        # Check if the user is already online, and add them if not
         if not self.chat.users_online.filter(id=self.user.id).exists():
             self.chat.users_online.add(self.user)
-            self.chat.save()  # Save changes to the database
-            self.count_online()  # Update online user count if required
+            self.chat.save()  
+            self.online_counter() 
 
         self.accept()
 
-    def disconnect (self, close_code):
-        if hasattr(self, 'chat') and self.chat:
-            async_to_sync(self.channel_layer.group_discard)(self.chat_name, self.channel_name)
-
-            #check and remove online
-            if self.user in self.chat.users_online.all():
-                self.chat.users_online.remove(self.user)
-                self.count_online()
+    def disconnect(self, close_code):
+        
+        if self.user:
+            self.chat.users_online.remove(self.user)
+            self.chat.save()
+            self.online_counter()  # Update online user count if required
 
     def receive(self, text_data):
-        text_data_json=json.loads(text_data)
-        text = text_data_json['text']
+        text_data_json = json.loads(text_data)
+        text = text_data_json.get("text", "")
 
         message = GroupMessage.objects.create(
-            text = text, 
-            author = self.user,
-            group = self.chat
+            text=text,
+            author=self.user,
+            group=self.chat
         )
 
         event = {
-            "type":"message_handler", 
-            "message_id": message.id,
+            "type": "chat_message_handler",
+            "message": {
+                "id": message.id,
+                "author_username": message.author.username,
+                "text": message.text,
+            },
         }
-
         async_to_sync(self.channel_layer.group_send)(self.chat_name, event)
 
-    def message_handler(self, event):
-        message_id = event["message_id"]
-        message = GroupMessage.objects.get(id=message_id)
-        context = {
-            "message":message,
-            "user": self.user,
-        }
-        html = render_to_string("chat/partials/chat_message_p.html", context=context)
-        self.send(text_data=html)
+    def chat_message_handler(self, event):
 
-    def count_online(self):
-        online_count = self.chat.users_online.count() - 1
+        self.send(text_data=json.dumps(event))
+
+    def online_counter(self):
+        online_count = self.chat.users_online.count()
 
         event = {
-            "type":'online_count_handler', 
-            "online_count":online_count
+            "type": "online_count_handler",
+            "online_count": online_count,
         }
-
         async_to_sync(self.channel_layer.group_send)(self.chat_name, event)
 
     def online_count_handler(self, event):
-        online_count = event["online_count"]
-        html = render_to_string("chat/partials/online_count.html", {"online_count": online_count})
-        self.send(text_data=html)
+        # Send the online count to the frontend
+        self.send(text_data=json.dumps(event))
