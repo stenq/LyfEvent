@@ -19,7 +19,7 @@ class Event(models.Model):
     participants = models.ManyToManyField(User, related_name="joined_event", blank=True)
     date = models.DateTimeField(verbose_name="Event Date")
     location = models.CharField(max_length=255, verbose_name="Event Location")
-   
+
    
     def __str__(self):
         return f"{self.title} - Event"

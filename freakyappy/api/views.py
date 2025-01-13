@@ -100,7 +100,9 @@ def eventCreate(request):
         request.data['image'] = ContentFile(image_data, name=image_name) 
     
     if serializer.is_valid():
-        serializer.save(host=request.user)
+        event = serializer.save(host=request.user)
+        event.participants.add(request.user)
+
         return Response({
             "status": "success",
             "message": "Event created successfully",
