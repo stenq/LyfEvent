@@ -186,6 +186,7 @@ const CreateEventPage = ({eventId}) => {
 
 
     return (
+      <div className= "bg-gradient-to-r from-blue-50 to-blue-100">
       <div className="container mx-auto p-4 max-w-2xl bg-white shadow-lg rounded-lg">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">{eventId ? "Edit Event" : "Create Event"}</h1>
         <form className="grid grid-cols-1 gap-6" onSubmit={eventId ? handleSubmitChange : handleSubmit}>
@@ -324,6 +325,7 @@ const CreateEventPage = ({eventId}) => {
             </button>
           </div>
         </form>
+      </div>
       </div>
     );
   };

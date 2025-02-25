@@ -9,8 +9,8 @@ from rest_framework import status
 
 import base64
 from django.core.files.base import ContentFile
-
-
+from .models import UserProfile
+from .serializers import UserProfileSerializer
 @api_view(['GET'])
 def apiOverview(request):
 
@@ -166,12 +166,14 @@ def joinEvent(request, pk):
     user = request.user
 
     event = Event.objects.get(id=pk)
-
+    
     event.participants.add(user)
     event.save()
 
     serializer = EventSerializer(event)
     return Response(serializer.data)
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -186,3 +188,47 @@ def leaveEvent(request, pk):
 
     serializer = EventSerializer(event)
     return Response(serializer.data)
+
+@api_view(["GET","PUT"])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    user = request.user
+
+    # Get or create the profile
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    if request.method == "GET": 
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)  # ✅ Return profile data
+    
+    
+    elif request.method == "PUT":
+        try:
+            user.username = request.data.get("username", user.username)
+
+            if "profile_picture" in request.FILES:
+                profile.profile_picture = request.FILES["profile_picture"]
+                profile.save()  # Save profile image separately
+
+            user.save()
+
+            return Response({
+                "username": user.username,
+                "profile_picture": profile.profile_picture.url if profile.profile_picture else None
+            }, status=200)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_joined_events(request):
+    try:
+        # Get events the user has joined but did NOT create
+        events = Event.objects.filter(participants=request.user).exclude(host=request.user)
+
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=200)
+
+    except Exception as e:
+        print("Error fetching joined events:", str(e))  # Debugging
+        return Response({"error": "Something went wrong"}, status=500)

@@ -16,7 +16,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Profile from './pages/Profile'
 import MyEvents from './pages/MyEvents'
 import ChatPage from './pages/ChatPage'
-
+import Contact from './pages/Contact'
 
 function App() {
 
@@ -29,9 +29,9 @@ function App() {
             <Route path='/' exact element={<Home />} />
             <Route path='/event/:id' element={<EventPage />}/>
             <Route path='/events' element={<EventsPage />}/>
-            
+            <Route path='/contact' element={<Contact/>}/>
             <Route path='/about' element={<About/>}/>
-
+            
             <Route path='/chat/:name/*' element={
               <PrivateRoute element={<ChatPage/>}/>
             }/>
@@ -43,7 +43,7 @@ function App() {
             <Route path='/profile/*' element={
               <PrivateRoute element={<Profile/>}/>
             }/>
-
+            
             <Route path='/chat/*' element={
               <PrivateRoute element={<ChatPage/>}/>
             }/>

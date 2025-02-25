@@ -29,7 +29,7 @@ const Header = () => {
 
                     <a
                       href="/profile" 
-                      className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 lg:px-6 py-2 lg:py-2.5 mr-2 focus:outline-none"
+                      className="text-gray-800 bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-lg px-5 lg:px-6 py-3 lg:py-2.5 shadow-lg border-2 border-blue-500 focus:outline-none transition-all duration-200 transform hover:scale-105 mr-4"
                     >
                       Profile
                     </a>
@@ -83,7 +83,7 @@ const Header = () => {
                   <li>
                     <a
                       href="/"
-                      class="block py-2 pr-4 pl-3 text-white rounded bg-blue-600 lg:bg-transparent lg:text-blue-600 lg:p-0 hover:bg-blue-700 hover:text-white"
+                      class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-600 lg:p-0"
                       aria-current="page"
                     >
                       Home
@@ -115,7 +115,7 @@ const Header = () => {
                   </li>
                   <li>
                     <a
-                      href="#"
+                      href="/contact"
                       class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-600 lg:p-0"
                     >
                       Contact

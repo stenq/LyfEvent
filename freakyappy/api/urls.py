@@ -12,6 +12,7 @@ urlpatterns = [
     path('events-delete/<str:pk>/', views.eventDelete, name='events-delete'),
     path('events-join/<str:pk>/', views.joinEvent, name='events-join'),
     path('events-leave/<str:pk>/', views.leaveEvent, name='events-leave'),
-
+    path("profile/", views.profile_view, name="profile"),
+    path('my-joined-events/', views.my_joined_events, name='my-joined-events'),
 
 ]

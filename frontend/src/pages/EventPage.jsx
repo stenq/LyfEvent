@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CreateEventPage from './CreateEventPage';
 import { AuthContext } from '../context/AuthContext';
 import Join from '../components/Join';
+import Footer from "../components/Footer";
 
 const EventPage = () => {
   const { id } = useParams();
@@ -51,11 +52,11 @@ const EventPage = () => {
   };
 
   return (
-    <div>
+    <div >
       {editOpen ? (
         <CreateEventPage eventId={id} />
       ) : (
-        <section className="py-8 bg-gray-50 md:py-16 antialiased">
+        <section className="bg-gradient-to-r from-blue-50 to-blue-100 py-8 bg-gray-50 md:py-16 antialiased">
           <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
             {/* Page Title */}
             <div className="mb-16 text-center">
@@ -148,7 +149,9 @@ const EventPage = () => {
           </div>
         </section>
       )}
+      <Footer />
     </div>
+    
   );
 };
 

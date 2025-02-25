@@ -25,7 +25,7 @@ const EventsPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="bg-gradient-to-r from-blue-50 to-blue-100 flex flex-col min-h-screen">
       {/* Content Wrapper */}
       <h1 className='flex justify-center text-4xl font-bold text-black mb-6'>All Events</h1>
       <div>
