@@ -119,7 +119,7 @@ const ImageCroper = ({ imageSrc , updatePic, closeModal}) => {
 
           <button
             onClick={handleSaveClick}
-            className="text-white font-mono text-lg py-3 px-6 rounded-3xl mt-4 bg-sky-500 hover:bg-sky-600"
+            className="text-white  text-lg py-3 px-6 rounded-3xl mt-4 bg-customBlue-500 hover:bg-customBlue-600"
             >
             Save
         </button>

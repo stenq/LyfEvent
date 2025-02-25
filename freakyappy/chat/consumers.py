@@ -3,14 +3,15 @@ from django.shortcuts import get_object_or_404
 from .models import ChatGroup, GroupMessage
 from asgiref.sync import async_to_sync
 import json
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticated
+
+from urllib.parse import unquote
 
 class ChatRoomConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
 
-        self.chat_name = self.scope["url_route"]["kwargs"]["chat_name"]
+        self.chat_name = unquote(self.scope["url_route"]["kwargs"]["chat_name"])
+        
         self.chat = ChatGroup.objects.get(chat_name=self.chat_name)
 
         async_to_sync(self.channel_layer.group_add)(

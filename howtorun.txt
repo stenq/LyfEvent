@@ -1,5 +1,13 @@
 configure venv
 
+source ./.venv/scripts/activate
+cd freakyappy
+python manage.py runserver
+
+source ./.venv/scripts/activate
+cd frontend
+npm run dev
+
 install requirements in freakyappy(backend)
 cd freakyappy
 pip install -r requirements.txt

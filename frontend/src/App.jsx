@@ -16,6 +16,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Profile from './pages/Profile'
 import MyEvents from './pages/MyEvents'
 import ChatPage from './pages/ChatPage'
+import Chat from './pages/Chat'
+import EventsFiltered from './pages/EventsFiltered'
+import MyProfile from './pages/MyProfile'
 
 
 function App() {
@@ -25,19 +28,21 @@ function App() {
       <div className='App'>
         <AuthProvider>
           <Header />
+          
           <Routes>
             <Route path='/' exact element={<Home />} />
             <Route path='/event/:id' element={<EventPage />}/>
             <Route path='/events' element={<EventsPage />}/>
+            <Route path='/events-search' element={<EventsFiltered />}/>
             
             <Route path='/about' element={<About/>}/>
 
-            <Route path='/chat/:name/*' element={
-              <PrivateRoute element={<ChatPage/>}/>
-            }/>
-
             <Route path='/create-event/*' element={
               <PrivateRoute element={<CreateEventPage/>}/>
+            }/>
+
+            <Route path='/my-profile/*' element={
+              <PrivateRoute element={<MyProfile/>}/>
             }/>
 
             <Route path='/profile/*' element={
@@ -45,7 +50,7 @@ function App() {
             }/>
 
             <Route path='/chat/*' element={
-              <PrivateRoute element={<ChatPage/>}/>
+              <PrivateRoute element={<Chat/>}/>
             }/>
 
             <Route path='/my-events/*' element={
@@ -55,6 +60,12 @@ function App() {
             <Route path='/login' element={<LoginPage />}/>
           </Routes>
           </AuthProvider>
+
+          <footer >
+            <Footer />
+          </footer>
+
+
       </div>
     </Router>
   )

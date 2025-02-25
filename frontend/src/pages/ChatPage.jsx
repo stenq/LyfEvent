@@ -1,23 +1,58 @@
 import React, { useContext, useEffect, useState , useRef} from "react";
 import ChatMessage from "../components/ChatMessage";
 import { AuthContext } from "../context/AuthContext";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom"
 
-const ChatPage = () => {
+
+const ChatPage = ({name}) => {
   let { user, authTokens} = useContext(AuthContext);
-  let { name } = useParams();
   let [messages, setMessages] = useState([]);
   let [onlineUsers, setOnlineUsers] = useState(0); 
   const [input, setInput] = useState(""); 
   const [ws, setWs] = useState(null); 
   const chatContainerRef = useRef(null)
+  let [isJoined, setIsJoined] = useState(false)
+
+  useEffect(() => {
+    const checkJoined = async () => {
+      try {
+        let response = await fetch(`/api/chat/${name}`, {
+          headers: {
+            Authorization: `Bearer ${authTokens.access}`, // Include token if required
+          },
+        });
+
+        if (response.ok) {
+          let data = await response.json();
+          const isUserJoined = data.chat_group.participants.some(
+            (participant) => participant === user.user_id
+          );
+
+          setIsJoined(isUserJoined);
+        } else if (response.status === 403) {
+          setIsJoined(false);
+        } else {
+          console.error("Error fetching chat data:", response.statusText);
+          setIsJoined(false);
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+        setIsJoined(false);
+      }
+    };
+
+    checkJoined();
+  }, [name, authTokens.access, user.user_id]);
+  
+
 
   // Initialize WebSocket
   useEffect(() => {
+    if (!isJoined) return
     const token = authTokens.access;
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
     const socket = new WebSocket(
-      `${protocol}://localhost:8000/ws/chat/${name}/?token=${encodeURIComponent(token)}`
+      `${protocol}://localhost:8000/ws/chat/${encodeURIComponent(name)}/?token=${encodeURIComponent(token)}`
   )
 
     socket.onopen = () => {
@@ -44,12 +79,13 @@ const ChatPage = () => {
         socket.close();
       }
     };
-  }, [name])
+  }, [name, isJoined, authTokens.access])
 
 
   useEffect(() => {
+    if (!isJoined) return
     getMessages();
-  }, [name])
+  }, [name, isJoined, authTokens.access])
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -82,12 +118,18 @@ const ChatPage = () => {
       setInput(""); 
     }
   };
-  return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 container mx-auto mt-8">
-      <div className="bg-white shadow-md rounded-lg w-2/4 h-[80vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col">
 
-        <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center relative">
-          <p className="text-lg font-semibold">{name}</p>
+
+  if (!isJoined) {
+    return <p>Join event to have access to this chat group.</p>; 
+  }
+
+  return (
+    <div className="container mx-auto ">
+      <div className="bg-white shadow-md rounded-lg  h-[80vh]  flex flex-col">
+
+        <div className="p-4 border-b bg-[#6d6fff] text-white rounded-t-lg flex justify-between items-center relative">
+          <p className="text-lg font-semibold">{name} Event</p>
           <p
             id="online_count"
             className="text-sm absolute bottom-1 left-1/2 transform -translate-x-1/2"
@@ -98,6 +140,7 @@ const ChatPage = () => {
 
         <div id="chat_container" className="p-4 flex-1 overflow-y-auto" ref={chatContainerRef} >
           <div id="chatbox" className="mb-2">
+
             <ul id="chat_messages" className="flex flex-col justify-end gap-2 p-4">
               {messages.map((message) => (
                 <ChatMessage
@@ -119,13 +162,13 @@ const ChatPage = () => {
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
                 name="text"
-                className="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#6d6fff]"
                 placeholder="Type a message..."
               />
               <button
                 id="send-button"
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
+                className="bg-[#6d6fff] text-white px-4 py-2 rounded-r-md hover:bg-[#5a5ae6] transition duration-300"
               >
                 Send
               </button>

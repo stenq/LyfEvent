@@ -11,7 +11,7 @@ const ChatMessage = ({ content, authorName}) => {
         <div>
             {authorName===user.username ? (
                 <li class="flex justify-end mb-4"> 
-                <div class="bg-green-200 rounded p-4 chat-bubble">
+                <div class="bg-customBlue-200 rounded p-4 chat-bubble">
                     <p class="break-words">
                         {content}
                     </p>

@@ -1,7 +1,9 @@
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from .models import Event
+from .models import Event, Profile
 from chat.models import ChatGroup
+
+from django.contrib.auth.models import User
 
 @receiver(m2m_changed, sender=Event.participants.through)
 def update_chat_participants(sender, instance, action, reverse, model, pk_set, **kwargs):
@@ -20,3 +22,15 @@ def update_chat_participants(sender, instance, action, reverse, model, pk_set, *
         chat.participants.remove(*pk_set)  # Remove participants from the chat
     elif action == 'pre_clear':  # When all participants are cleared from the event
         chat.participants.clear()  # Clear all participants in the chat
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Create a Profile instance when a new User is created
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    # Save the Profile when the User instance is saved (to update any changes if needed)
+    instance.profile.save()

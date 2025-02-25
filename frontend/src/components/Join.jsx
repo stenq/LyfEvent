@@ -20,7 +20,7 @@ const Join = ({ eventId }) => {
       const data = await response.json();
       
       // Check if user is already in participants
-      const isUserJoined = data.participants.some(participant => participant === user.user_id);
+      const isUserJoined = data.participants.some(participant => participant.id === user.user_id);
       
       if (isUserJoined) {
         setJoined(true);

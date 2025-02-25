@@ -47,28 +47,28 @@ const EventsPage = () => {
       {/* Content Wrapper */}
       <div>
         {myEvents.length > 0 ? (
-          <div className="grid lg:grid-cols-4 gap-8 container mx-auto">
+          <div className="grid lg:grid-cols-4 gap-8 px-6 container mx-auto">
             {currentEvents.map((event) => (
               <EventItem key={event.id} event={event} />
             ))}
           </div>
         ) : (
           <div className="flex justify-center items-center h-64">
-            <p className="text-xl font-bold text-gray-600">No events found. Check back later!</p>
+            <p className="text-xl font-bold text-gray-600">You've not created any events yet...</p>
           </div>
         )}
       </div>
 
       {/* Pagination */}
       {myEvents.length > 0 && (
-        <div className="py-4 container mx-auto">
-          <Pagination
-            eventsPerPage={eventsPerPage}
-            totalEvents={myEvents.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
-        </div>
+        <div className="absolute bottom-0 left-0 right-0 py-4 container mx-auto">
+        <Pagination
+          eventsPerPage={eventsPerPage}
+          totalEvents={myEvents.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
+      </div>
       )}
     </div>
   );

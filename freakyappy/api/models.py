@@ -1,6 +1,4 @@
 from django.db import models
-
-
 from django.contrib.auth.models import User
 
 
@@ -29,3 +27,15 @@ class Event(models.Model):
 
     def is_user_joined(self, user):
         return self.participants.filter(id=user.id).exists()
+    
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    avatar = models.ImageField(upload_to="profile_images/avatars", blank=True, null=True)
+    fact1 = models.TextField(blank=True, null=True)
+    fact2 = models.TextField(blank=True, null=True)
+    fact3 = models.TextField(blank=True, null=True)
+    followers = models.ManyToManyField("self", symmetrical=False, related_name="following", blank=True)
+
+
+

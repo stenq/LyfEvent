@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const EventItem = ({ event }) => {
   return (
+    <Link to={`/event/${event.id}`}>
     <div className="bg-white border border-gray-200 rounded-lg shadow border-black-700 transform hover:scale-105 transition-transform duration-300 ">
 
-      <Link to={`/event/${event.id}`}>
         {/* Image with 16:9 aspect ratio */}
         <div className="relative w-full" style={{ paddingTop: '56.25%' }}> {/* 16:9 ratio */}
           <img
@@ -15,25 +15,30 @@ const EventItem = ({ event }) => {
           />
         </div>
 
-        {/* Event details */}
-        <div className="px-5 pb-5">
-          {/* Title */}
-          <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-black">
-            {event?.title}
-          </h5>
+{/* Event details */}
+<div className="px-5 pb-2">
+  {/* Title */}
+  <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-black">
+    {event?.title}
+  </h5>
 
-          {/* Description */}
-          <p className="text-gray-700 dark:text-gray-600 mt-2 text-md line-clamp-2">
-            {event?.description}
-          </p>
+  {/* Description & Category on one line with centered splitter */}
+  <div className="flex items-center mt-2 text-md text-gray-700 dark:text-gray-600">
+    {/* Description (left-aligned) */}
+    <p className="truncate flex-1">{event?.description}</p>
 
-          {/* Category */}
-          <p className="mt-4 text-sm font-medium text-blue-600 dark:text-blue-400">
-            Type: {event?.category || "Uncategorized"}
-          </p>
-        </div>
-      </Link>
+    {/* Centered splitter */}
+    <span className="text-gray-400 mx-4">|</span>
+
+    {/* Category (right-aligned) */}
+    <p className="text-customBlue-600 dark:text-customBlue-400 text-sm font-medium whitespace-nowrap">
+      Type: {event?.category || "Uncategorized"}
+    </p>
+  </div>
+</div>
     </div>
+  
+    </Link>
   );
 };
 

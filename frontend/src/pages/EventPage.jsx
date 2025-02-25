@@ -41,7 +41,7 @@ const EventPage = () => {
         },
       });
       if (response.ok) {
-        navigate('/events');
+        navigate('/my-events');
       } else {
         throw new Error('Failed to delete the event.');
       }
@@ -55,7 +55,7 @@ const EventPage = () => {
       {editOpen ? (
         <CreateEventPage eventId={id} />
       ) : (
-        <section className="py-8 bg-gray-50 md:py-16 antialiased">
+        <section className="min-h-screen pb-8 md:pb-16 antialiased">
           <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
             {/* Page Title */}
             <div className="mb-16 text-center">
@@ -85,37 +85,37 @@ const EventPage = () => {
 
                 {/* Description Section */}
                 <div className="mt-4">
-                  <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Description:</h4>
-                  <p className="mt-2 text-base text-gray-600">{event?.description}</p>
+                  <h4 className="text-lg font-medium  sm:text-xl">Description:</h4>
+                  <p className="text-lg font-medium text-gray-600">{event?.description}</p>
                 </div>
 
                 {/* Category Section */}
                 {event?.category && (
                   <div className="mt-6">
-                    <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Category:</h4>
-                    <p className="mt-2 text-base text-gray-600">{event?.category}</p>
+                    <h4 className="text-lg font-medium  sm:text-xl">Category:</h4>
+                    <p className="text-lg font-medium text-gray-600">{event?.category}</p>
                   </div>
                 )}
 
                 {event?.location && (
                   <div className="mt-6">
-                    <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Location:</h4>
-                    <p className="mt-2 text-base  text-gray-600">{event?.location}</p>
+                    <h4 className="text-lg font-medium  sm:text-xl">Location:</h4>
+                    <p className="text-lg font-medium text-gray-600">{event?.location}</p>
                   </div>
                 )}
 
               {event?.date && (
                 <div className="mt-6 flex ">
                   <div className='mr-8'>
-                  <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Date:</h4>
-                  <p className="mt-2 text-base text-gray-600">
+                  <h4 className="text-lg font-medium  sm:text-xl">Date:</h4>
+                  <p className="text-lg font-medium text-gray-600">
                     {new Intl.DateTimeFormat('en-GB', { dateStyle: 'short' }).format(new Date(event.date))}
                   </p>
                   </div>
                   
                   <div>
-                  <h4 className="text-lg font-medium text-gray-700 sm:text-xl">Time:</h4>
-                  <p className="mt-2 text-base text-gray-600">
+                  <h4 className="text-lg font-medium sm:text-xl">Time:</h4>
+                  <p className="text-lg font-medium text-gray-600">
                     {new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(new Date(event.date))}
                   </p>
                   </div>
@@ -128,7 +128,7 @@ const EventPage = () => {
                 {user?.user_id === event?.host ? (
                   <div className="mt-8 flex gap-4">
                     <button
-                      className="px-6 py-3.5 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+                      className="px-6 py-3.5 bg-customBlue-600 text-white font-semibold rounded-md shadow hover:bg-customBlue-700"
                       onClick={handleEdit}
                     >
                       Edit

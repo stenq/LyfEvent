@@ -4,14 +4,18 @@ from rest_framework.response import Response
 from .serializers import ChatGroupSerializer, GroupMessageSerializer
 from rest_framework import status
 from .models import ChatGroup, GroupMessage
+from api.models import Event
 
 
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET'])
 def chat_view(request, chat_name):
     try:
-        # Fetch the ChatGroup by name
         chat_group = ChatGroup.objects.get(chat_name=chat_name)
+
+    except ChatGroup.DoesNotExist:
+        return Response({"error": "Chat group not found."}, status=status.HTTP_404_NOT_FOUND)
+
     except ChatGroup.DoesNotExist:
         return Response({"error": "Chat group not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -36,3 +40,15 @@ def chat_view(request, chat_name):
             return Response(GroupMessageSerializer(message).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def get_all_chats(request):
+    user = request.user
+    chat_groups = user.chat_groups.all()
+
+    serialized_chats = ChatGroupSerializer(chat_groups, many=True)
+
+    return Response(serialized_chats.data)
+

@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.slider-container {
+    width: 70%; 
+
+  }
+
+
+.slick-dots {
+    bottom: 80px !important; 
+  }
+  

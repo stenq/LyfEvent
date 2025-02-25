@@ -22,7 +22,7 @@ const goToPreviousPage = () => {
 }
 
 return (
-  <div className="flex justify-center items-center h-full pt-6">
+  <div className="flex justify-center items-center h-full">
     <nav aria-label="Page navigation example">
       <ul className="flex items-center -space-x-px h-10 text-base">
         {/* Previous Button */}

@@ -18,7 +18,6 @@ html, body {
     color: white;
     text-align: center;
     padding: 10px;
-    /* Ensures footer sticks to bottom */
-    margin-top: auto; /* Pushes footer to the bottom of the page */
+    margin-top: auto;
   }
   

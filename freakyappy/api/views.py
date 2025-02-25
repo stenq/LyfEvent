@@ -3,12 +3,19 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import EventSerializer
-from .models import Event
+from .serializers import EventSerializer, ProfileSerializer
+from .models import Event, Profile
+from django.contrib.auth.models import User
 from rest_framework import status
 
 import base64
 from django.core.files.base import ContentFile
+
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.db.models import Q
+
+from django.shortcuts import get_object_or_404
+
 
 
 @api_view(['GET'])
@@ -122,17 +129,25 @@ def eventUpdate(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "Event not found"}, status=404)
 
-    serializer = EventSerializer(instance=event, data=request.data)
-
+    # Check if the image in the request data is a new one or not
     if 'image' in request.data:
-    # Get the base64 image string
-        format, imgstr = request.data['image'].split(';base64,') 
-        ext = format.split('/')[-1]  # Extract the image extension (e.g., 'png', 'jpeg')
+        # If the image is a new file (base64 encoded), process it
+        if "data:image" in request.data['image']:
+            # Get the base64 image string
+            format, imgstr = request.data['image'].split(';base64,') 
+            ext = format.split('/')[-1]  # Extract the image extension (e.g., 'png', 'jpeg')
 
-        # Decode the base64 image string and create a ContentFile to attach to the serializer
-        image_data = base64.b64decode(imgstr)
-        image_name = f"{request.data['title']}_image.{ext}"  # Naming the image dynamically based on event title
-        request.data['image'] = ContentFile(image_data, name=image_name) 
+            # Decode the base64 image string and create a ContentFile to attach to the serializer
+            image_data = base64.b64decode(imgstr)
+            image_name = f"{request.data['title']}_image.{ext}"  # Naming the image dynamically based on event title
+            request.data['image'] = ContentFile(image_data, name=image_name)
+        else:
+            # If it's a URL (i.e., the image is not being changed), leave the image as it is
+            # This assumes the image URL is already set on the event model
+            request.data['image'] = event.image
+
+    # Now we proceed with the regular update logic
+    serializer = EventSerializer(instance=event, data=request.data)
     
     if serializer.is_valid():
         serializer.save()
@@ -157,6 +172,14 @@ def eventDelete(request, pk):
 def myEvents(request):
     my_events = Event.objects.filter(host=request.user).order_by('-updated') 
     serializer = EventSerializer(my_events, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def joinedEvents(request, pk):
+    user = get_object_or_404(User, id=pk)
+    joined_events = user.joined_event.all().order_by('-updated') 
+    serializer = EventSerializer(joined_events, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -186,3 +209,100 @@ def leaveEvent(request, pk):
 
     serializer = EventSerializer(event)
     return Response(serializer.data)
+
+#Only PostgreSQL
+# @api_view(['POST', 'GET'])
+# def filter_by_text(request):
+#     print(request)
+#     text = request.data.get("text", "").strip() 
+
+#     if text:
+#         vector = SearchVector('title', 'description', 'category', 'location')
+#         query = SearchQuery(text)
+
+#         results = Event.objects.annotate(
+#             rank=SearchRank(vector, query)
+#         ).filter(rank__gt=0).order_by('-rank')
+#     else:
+#         results = Event.objects.all()
+
+#     serialized_events = EventSerializer(results, many=True)
+#     return Response(serialized_events.data)
+
+@api_view(['POST', 'GET'])
+def filter_by_text(request):
+    text = request.data.get("text", "").strip()  
+
+    if text:
+        results = Event.objects.filter(
+            Q(title__icontains=text) |
+            Q(description__icontains=text) |
+            Q(category__icontains=text) |
+            Q(location__icontains=text)
+        )
+    else:
+        results = Event.objects.all()
+
+    serialized_events = EventSerializer(results, many=True)
+    return Response(serialized_events.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile(request, pk):
+    profile = get_object_or_404(Profile, user__id=pk)
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow(request, pk):
+    user = request.user
+    user_to_follow = get_object_or_404(User, id=pk)
+    user_to_follow_profile = get_object_or_404(Profile, user=user_to_follow)
+
+    if user == user_to_follow:
+        return Response({"error": "You cannot follow yourself."}, status=400)
+
+    profile = get_object_or_404(Profile, user=user)
+    
+
+    # Ensure that `following` is a ManyToManyField(User) in Profile
+    if user_to_follow in profile.following.all():
+        return Response({"message": "You are already following this user."}, status=400)
+
+    profile.following.add(user_to_follow_profile)
+    profile.save()
+
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data,  status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow(request, pk):
+    user = request.user
+    user_to_unfollow = get_object_or_404(User, id=pk)
+    print(user_to_unfollow)
+    user_to_unfollow_profile = get_object_or_404(Profile, user=user_to_unfollow)
+
+
+    if user == user_to_unfollow:
+        return Response({"error": "You cannot unfollow yourself."}, status=400)
+    
+    profile = get_object_or_404(Profile, user=user)
+    print(list(profile.following.all()))
+
+    if user_to_unfollow_profile not in profile.following.all():
+        return Response({"message": "You are not following this user."}, status=400)
+
+    profile.following.remove(user_to_unfollow_profile)
+    profile.save()
+
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data, status=200)
+
+
+

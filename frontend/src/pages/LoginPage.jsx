@@ -5,7 +5,7 @@ const LoginPage = () => {
   let {loginUser} = useContext(AuthContext)
   return (
     <div>
-      <section className="bg-white">
+      <section className="min-h-screen bg-white">
         <div className="flex flex-col items-center  px-6 py-8 mx-auto lg:py-0">
           <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -57,7 +57,7 @@ const LoginPage = () => {
                 
                 <button
                   type="submit"
-                  className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="w-full text-white bg-customBlue-600 hover:bg-customBlue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   Sign in
                 </button>
@@ -66,7 +66,7 @@ const LoginPage = () => {
                   Don’t have an account yet?{' '}
                   <a
                     href="#"
-                    className="font-medium text-blue-600 hover:underline"
+                    className="font-medium text-customBlue-600 hover:underline"
                   >
                     Sign up
                   </a>
