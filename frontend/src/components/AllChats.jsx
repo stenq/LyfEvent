@@ -4,6 +4,7 @@ import ChatPage from '../pages/ChatPage';
 import { Link, useNavigate } from "react-router-dom";
 import UsersModal from './UsersModal';
 
+
 const AllChats = () => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [chats, setChats] = useState([]);
@@ -159,9 +160,9 @@ const AllChats = () => {
 
 
           {/* SIDEBAR RIGHT 1 */}
-          <div className="bg-white shadow-md ring-2 ring-black rounded-lg
+          <div className="truncate flex-1 bg-white shadow-md ring-2 ring-black rounded-lg
            h-[45vh] w-[300px] flex flex-col relative p-4 mb-4">
-            <h1 className="flex justify-center text-2xl font-bold text-black mb-2">
+            <h1 className="truncate flex-1 flex justify-center text-2xl font-bold text-black mb-2">
               {selectedChat.chat_name}
             </h1>
 
@@ -176,9 +177,7 @@ const AllChats = () => {
 
             {selectedEvent && (
               <div className="mt-4 space-y-1 text-gray-700">
-                <p className="text-lg font-medium">
-                  <span className="font-bold text-black">Description:</span> {selectedEvent.description}
-                </p>
+                
                 <p className="text-lg font-medium">
                   <span className="font-bold text-black">Location:</span> {selectedEvent.location}
                 </p>
@@ -215,7 +214,8 @@ const AllChats = () => {
             onClick={() => navigate('/profile', { state: { user } })}  // ✅ Fixed Syntax
             className="flex items-center gap-3 p-1 hover:bg-customBlue-100 transition cursor-pointer"
           >
-            <img src="" className="w-10 h-10 rounded-full" alt="User"/>
+            <img src={user.avatar || "assets/img/ava.svg"}
+            className="w-10 h-10 rounded-full" alt={user.avatar}/>
             <span className="font-medium">{user.username}</span>
           </div>
         )) 

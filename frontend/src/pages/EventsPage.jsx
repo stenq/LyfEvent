@@ -18,6 +18,7 @@ const EventsPage = () => {
   const getEvents = async () => {
     let response = await fetch("/api/events-list/");
     let data = await response.json();
+    console.log(data);
     setEvents(data);
   };
 
@@ -81,7 +82,7 @@ const EventsPage = () => {
     />
     
     <button
-      className="absolute right-2 flex items-center rounded bg-slate-900 py-2.5 px-2.5 border border-transparent text-md text-white transition-all hover:scale-125"
+      className="absolute right-2 flex items-center rounded bg-[#6d6fff] py-2 px-2.5 border border-transparent text-md text-white transition-all hover:scale-125"
       type="submit"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">

@@ -175,12 +175,12 @@ const MyProfile = () => {
             <div className="rounded-lg ring-1 ring-black h-32 overflow-hidden bg-customBlue-500 relative z-10"></div>
   
             {/* Avatar (Exempt from Blur) */}
-            <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden bg-gray-200 z-20">
+            <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden bg-gray-200 z-10">
               <img src={ava} alt="" />
             </div>
   
             {/* Username (Exempt from Blur) */}
-            <div className="text-center mt-2 relative z-20">
+            <div className="text-center mt-2 relative z-10">
               <h2 className="font-semibold">{user.username}</h2>
             </div>
   

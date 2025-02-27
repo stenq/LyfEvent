@@ -4,7 +4,7 @@ import Modal from "../components/Modal"
 import { AuthContext } from '../context/AuthContext'
 import {useFormik} from "formik"
 import basicSchema from '../schemas/FormValidator';
-
+import Swal from "sweetalert2";
 
 
 // const CreateEventPage = ({eventId}) => {
@@ -378,13 +378,28 @@ const CreateEventPage = ({eventId}) => {
         const data = await response.json();
   
         if (response.ok) {
-          console.log('Event saved successfully:', data);
-          navigate("/my-events");  // Navigate after successful creation or update
+          Swal.fire({
+            title: "🎉 Success!",
+            text: "Your event has been created or changed!",
+            icon: "success",
+            confirmButtonColor: "#4CAF50",
+          });
+          navigate("/my-events");  // Redirect to 'My Events' page
         } else {
-          console.error('Error:', data.errors || data.message || 'Unknown error');
+          Swal.fire({
+            title: "⚠️ Oops!",
+            text: data.detail || "You can only create up to 8 events.",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
         }
       } catch (error) {
-        console.error('Network Error:', error);
+        Swal.fire({
+          title: "❌ Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
       }
     },
   });
